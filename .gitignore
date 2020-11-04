@@ -59,3 +59,7 @@ sysinfo.txt
 crashlytics-build.properties
 
 .DS_Store
+
+# Core Logic
+/MatchMakingCore/obj/
+/MatchMakingCore/bin/
