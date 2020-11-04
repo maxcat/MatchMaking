@@ -1,0 +1,10 @@
+{
+  "name": "matchmaking.core",
+  "displayName": "Matchmaking Core",
+  "version": "1.0.0",
+  "hideInEditor": false,
+  "type": "library",
+  "dependencies": {
+    "jillejr.newtonsoft.json-for-unity": ""
+  }
+}
