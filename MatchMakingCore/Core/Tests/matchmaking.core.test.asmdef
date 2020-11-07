@@ -2,7 +2,8 @@
     "name": "matchmaking.core.test",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "matchmaking.core.runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

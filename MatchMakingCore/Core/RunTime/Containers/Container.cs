@@ -15,19 +15,19 @@ namespace MatchMakingCore
         public void Test()
         {
 
-            Console.WriteLine(File.Exists(PLAYER_DATA_PATH));
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            using (StreamReader stream = new StreamReader(PLAYER_DATA_PATH))
-            {
-                string str = stream.ReadToEnd();
-                Console.WriteLine(str);
+            //Console.WriteLine(File.Exists(PLAYER_DATA_PATH));
+            //Console.WriteLine(Directory.GetCurrentDirectory());
+            //using (StreamReader stream = new StreamReader(PLAYER_DATA_PATH))
+            //{
+            //    string str = stream.ReadToEnd();
+            //    Console.WriteLine(str);
 
-                var dataList = JsonConvert.DeserializeObject<PlayerData[]>(str);
-                for(int i = 0; i < dataList.Length; ++i)
-                {
-                    Console.WriteLine(dataList[i].ToString());
-                }
-            }            
+            //    var dataList = JsonConvert.DeserializeObject<PlayerData[]>(str);
+            //    for(int i = 0; i < dataList.Length; ++i)
+            //    {
+            //        Console.WriteLine(dataList[i].ToString());
+            //    }
+            //}            
         }
     }
 }

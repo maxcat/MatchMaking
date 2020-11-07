@@ -1,11 +1,10 @@
-﻿#if UNITY
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Tests
+namespace MatchMaking.Tests
 {
     public class MatchmakingTest
     {
@@ -27,4 +26,3 @@ namespace Tests
         }
     }
 }
-#endif
