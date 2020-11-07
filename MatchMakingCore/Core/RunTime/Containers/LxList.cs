@@ -47,6 +47,11 @@ namespace MatchMakingCore
             throw new LxException($"index out of range {index}");
         }
 
+        public bool ContainIndex(int index)
+        {
+            return index >= 0 && index < Count;
+        }
+
         public void Add(T value)
         {
             if (_lastIndex + 1 >= _array.Length)

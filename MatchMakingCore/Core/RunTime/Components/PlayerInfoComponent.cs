@@ -1,10 +1,8 @@
 ﻿using System;
-namespace MatchMakingCore.Core.Components
+namespace MatchMakingCore
 {
     public class PlayerInfoComponent
     {
-        public PlayerInfoComponent()
-        {
-        }
+        public int DatabaseKey;
     }
 }
