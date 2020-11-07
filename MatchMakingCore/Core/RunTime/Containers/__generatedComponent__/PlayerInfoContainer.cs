@@ -99,7 +99,7 @@ namespace MatchMakingCore
         #endregion
 
         #region Field Access Functions
-        public bool TryGetPlayerInfoDatabaseKey(int entityId, out int databaseKey)
+        public bool TryGetPlayerInfoDatabaseKeyFromEntityId(int entityId, out int databaseKey)
         {
             if(TryGetPlayerInfoComponent(entityId, out PlayerInfoComponent com))
             {
@@ -113,7 +113,7 @@ namespace MatchMakingCore
             }
         }
 
-        public bool TrySetPlayerInfoDatabaseKey(int entityId, int databaseKey)
+        public bool TrySetPlayerInfoDatabaseKeyFromEntityId(int entityId, int databaseKey)
         {
             if (TryGetPlayerInfoComponent(entityId, out PlayerInfoComponent com))
             {
@@ -124,6 +124,29 @@ namespace MatchMakingCore
             {
                 return false;
             }
+        }
+
+        public bool TryGetPlayerInfoDatabaseKeyFromIndex(int index, out int databaseKey)
+        {
+            databaseKey = -1;
+            if (_playerInfoComs.ContainIndex(index))
+            {
+                databaseKey = _playerInfoComs.Get(index).DatabaseKey;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool TrySetPlayerInfoDatabaseKeyFromIndex(int index, int value)
+        {
+            if(_playerInfoComs.ContainIndex(index))
+            {
+                _playerInfoComs.Get(index).DatabaseKey = value;
+                return true;
+            }
+
+            return false;
         }
         #endregion
 
