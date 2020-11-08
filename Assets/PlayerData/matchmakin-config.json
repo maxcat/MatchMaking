@@ -1,0 +1,5 @@
+{
+    "WinRatioWeight": 1000,
+    "WinWeight": 1000000,
+    "MaxDifferenceAllowed": 30
+}

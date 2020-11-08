@@ -10,8 +10,12 @@ namespace MatchMakingCore
         public static readonly string PLAYER_DATA_PATH = "../../../Assets/PlayerData/sample-data.json";
         public static readonly string UNITY_DATA_PATH = "Assets/PlayerData/sample-data.json";
 
+        public static readonly string MM_CONFIG_PATH = "../../../Assets/PlayerData/matchmakin-config.json";
+        public static readonly string UNITY_MM_CONFIG_PATH = "Assets/PlayerData/matchmakin-config.json";
+
         private PlayerData[] _playerDataBase;
         public int PlayerDatabaseSize => _playerDataBase.Length;
+        public MatchmakingConfig MmConfig;
 
         public Container()
         {
@@ -23,7 +27,7 @@ namespace MatchMakingCore
 #if UNITY
             path = UNITY_DATA_PATH;
 #else
-            path = PLAYER_DATA_PATH;
+            path = MM_CONFIG_PATH;
 #endif
             using (StreamReader stream = new StreamReader(path))
             {
@@ -31,6 +35,23 @@ namespace MatchMakingCore
                 _playerDataBase = JsonConvert.DeserializeObject<PlayerData[]>(str);
             }
         }
+
+        public void InitMatchmakingCofig()
+        {
+            string path;
+#if UNITY
+            path = UNITY_MM_CONFIG_PATH;
+#else
+            path = PLAYER_DATA_PATH;
+#endif
+            using (StreamReader stream = new StreamReader(path))
+            {
+                string str = stream.ReadToEnd();
+                MmConfig = JsonConvert.DeserializeObject<MatchmakingConfig>(str);
+            }
+        }
+
+
 
         public PlayerData GetPlayerData(int index)
         {

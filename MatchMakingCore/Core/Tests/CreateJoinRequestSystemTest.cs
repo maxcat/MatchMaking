@@ -13,10 +13,13 @@ namespace MatchMaking.Tests
             Container container = new Container();
             container.InitComponentComparers();
             container.InitPlayerDataBase();
+            container.InitMatchmakingCofig();
 
             var createJoinRequestSystem = new CreateJoinRequestSystem();
 
             createJoinRequestSystem.Execute(container);
+
+            LxLog.Log(container.MmConfig.ToString());
 
             int count = 0;
             for (int i = 0; i < container.PlayerDatabaseSize; ++i)
