@@ -21,11 +21,5 @@ namespace MatchMakingCore
                 _playerDataBase = JsonConvert.DeserializeObject<PlayerData[]>(str);
             }
         }
-
-        #region Entity
-        
-        
-        #endregion
-
     }
 }

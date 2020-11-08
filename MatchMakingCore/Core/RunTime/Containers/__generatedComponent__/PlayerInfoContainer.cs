@@ -7,12 +7,12 @@ namespace MatchMakingCore
 {
     public partial class Container
     {
-        private LxList<PlayerInfoComponent> _playerInfoComs = new LxList<PlayerInfoComponent>();
-        private LxList<int> _playerInfoEntityComMap = new LxList<int>();
+        private LxList<PlayerInfoComponent> _playerInfoComponents = new LxList<PlayerInfoComponent>();
+        private LxList<int> _playerInfoEntityComponentMap = new LxList<int>();
         private Queue<PlayerInfoComponent> _playerInfoPool = new Queue<PlayerInfoComponent>(COMPONENT_POOL_START_SIZE);
 
         #region Pooling
-        private PlayerInfoComponent GetPlayerInfoComFromPool()
+        private PlayerInfoComponent GetPlayerInfoComponentFromPool()
         {
             if(_playerInfoPool.Count > 0)
             {
@@ -24,20 +24,20 @@ namespace MatchMakingCore
             }
         }
 
-        public void ReleasePlayerInfoCom(PlayerInfoComponent com)
+        public void ReleasePlayerInfoComponent(PlayerInfoComponent com)
         {
             _playerInfoPool.Enqueue(com);
         }
         #endregion
 
         #region Help Functions
-        public bool HasPlayerInfoCom(int entityId)
+        public bool HasPlayerInfoComponent(int entityId)
         {
-            if (_playerInfoEntityComMap.ContainIndex(entityId))
+            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
             {
-                int componentIndex = _playerInfoEntityComMap.Get(entityId);
+                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
 
-                if (_playerInfoComs.ContainIndex(componentIndex))
+                if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
                     return true;
                 }
@@ -46,31 +46,31 @@ namespace MatchMakingCore
             return false;
         }
 
-        public void RemovePlayerInfoCom(int entityId)
+        public void RemovePlayerInfoComponent(int entityId)
         {
-            if (_playerInfoEntityComMap.ContainIndex(entityId))
+            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
             {
-                int componentIndex = _playerInfoEntityComMap.Get(entityId);
+                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
 
-                if (_playerInfoComs.ContainIndex(componentIndex))
+                if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
-                    ReleasePlayerInfoCom(_playerInfoComs.Get(componentIndex));
+                    ReleasePlayerInfoComponent(_playerInfoComponents.Get(componentIndex));
 
-                    _playerInfoComs.Remove(componentIndex);
-                    _playerInfoEntityComMap.Remove(entityId);
+                    _playerInfoComponents.Remove(componentIndex);
+                    _playerInfoEntityComponentMap.Remove(entityId);
                 }
             }
         }
 
         private bool TryGetPlayerInfoComponent(int entityId, out PlayerInfoComponent com)
         {
-            if (_playerInfoEntityComMap.ContainIndex(entityId))
+            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
             {
-                int componentIndex = _playerInfoEntityComMap.Get(entityId);
+                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
 
-                if (_playerInfoComs.ContainIndex(componentIndex))
+                if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
-                    com = _playerInfoComs.Get(componentIndex);
+                    com = _playerInfoComponents.Get(componentIndex);
                     return true;
                 }
             }
@@ -80,19 +80,19 @@ namespace MatchMakingCore
         }
 
 
-        public void AddPlayerInfoCom(int entityId)
+        public void AddPlayerInfoComponent(int entityId)
         {
-            if (_playerInfoEntityComMap.ContainIndex(entityId))
+            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
             {
-                int componentIndex = _playerInfoEntityComMap.Get(entityId);
-                if (_playerInfoComs.ContainIndex(componentIndex))
+                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
+                if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
                     return;
                 }
                 else
                 {
-                    _playerInfoEntityComMap.Set(entityId, _playerInfoComs.Count);
-                    _playerInfoComs.Add(GetPlayerInfoComFromPool());
+                    _playerInfoEntityComponentMap.Set(entityId, _playerInfoComponents.Count);
+                    _playerInfoComponents.Add(GetPlayerInfoComponentFromPool());
                 }
             }
         }
@@ -129,9 +129,9 @@ namespace MatchMakingCore
         public bool TryGetPlayerInfoDatabaseKeyFromIndex(int index, out int databaseKey)
         {
             databaseKey = -1;
-            if (_playerInfoComs.ContainIndex(index))
+            if (_playerInfoComponents.ContainIndex(index))
             {
-                databaseKey = _playerInfoComs.Get(index).DatabaseKey;
+                databaseKey = _playerInfoComponents.Get(index).DatabaseKey;
                 return true;
             }
 
@@ -140,9 +140,9 @@ namespace MatchMakingCore
 
         public bool TrySetPlayerInfoDatabaseKeyFromIndex(int index, int value)
         {
-            if(_playerInfoComs.ContainIndex(index))
+            if(_playerInfoComponents.ContainIndex(index))
             {
-                _playerInfoComs.Get(index).DatabaseKey = value;
+                _playerInfoComponents.Get(index).DatabaseKey = value;
                 return true;
             }
 
