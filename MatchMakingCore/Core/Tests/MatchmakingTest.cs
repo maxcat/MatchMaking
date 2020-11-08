@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using NUnit.Framework;
 using UnityEngine.TestTools;
-using MatchMakingCore;
 
 namespace MatchMaking.Tests
 {
@@ -21,33 +19,7 @@ namespace MatchMaking.Tests
             return watch;
         }
 
-        [Test]
-        public void Test()
-        {
-            LxLog.Init(new UnityLog());
-
-            Container container = new Container();
-            container.InitComponentComparers();
-            container.InitPlayerDataBase();
-
-            var createJoinRequestSystem = new CreateJoinRequestSystem();
-
-            createJoinRequestSystem.Execute(container);
-
-            int count = 0;
-            for(int i = 0; i < container.PlayerDatabaseSize; ++i)
-            {
-                PlayerData playerData = container.GetPlayerData(i);
-                if(!playerData.IsAvailable)
-                {
-                    ++count;
-                }
-            }
-
-            LxLog.Log($"player info component count is {container.PlayerInfoComponentsCount} not availabe player count {count}");
-            Assert.AreEqual(count, container.PlayerInfoComponentsCount);
-
-        }
+        
 
         [UnityTest]
         public IEnumerator MatchmakingTestWithEnumeratorPasses()

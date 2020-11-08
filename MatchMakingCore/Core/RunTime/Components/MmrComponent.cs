@@ -5,15 +5,15 @@ namespace MatchMakingCore
 {
     public class MmrComponent : IComponent, IComparable<MmrComponent>
     {
-        public float Ratio = 0f;
+        public ulong Weight = 0;
         public int CompareTo(MmrComponent other)
         {
-            return Ratio.CompareTo(other.Ratio);
+            return Weight.CompareTo(other.Weight);
         }
 
         public void Reset()
         {
-            Ratio = 0f;
+            Weight = 0;
         }
     }
 
@@ -21,7 +21,7 @@ namespace MatchMakingCore
     {
         public int Compare(MmrComponent x, MmrComponent y)
         {
-            return y.Ratio.CompareTo(x.Ratio);
+            return y.Weight.CompareTo(x.Weight);
         }
     }
 }

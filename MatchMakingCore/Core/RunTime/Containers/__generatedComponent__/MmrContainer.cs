@@ -100,25 +100,25 @@ namespace MatchMakingCore
         #endregion
 
         #region Field Access Functions
-        public bool TryGetMmrRatioFromEntityId(int entityId, out float ratio)
+        public bool TryGetMmrRatioFromEntityId(int entityId, out ulong weight)
         {
             if (TryGetMmrComponent(entityId, out MmrComponent com))
             {
-                ratio = com.Ratio;
+                weight = com.Weight;
                 return true;
             }
             else
             {
-                ratio = 0f;
+                weight = 0;
                 return false;
             }
         }
 
-        public bool TrySetMmrDatabaseKeyFromEntityId(int entityId, float ratio)
+        public bool TrySetMmrDatabaseKeyFromEntityId(int entityId, ulong weight)
         {
             if (TryGetMmrComponent(entityId, out MmrComponent com))
             {
-                com.Ratio = ratio;
+                com.Weight = weight;
                 return true;
             }
             else
@@ -127,23 +127,23 @@ namespace MatchMakingCore
             }
         }
 
-        public bool TryGetMmrDatabaseKeyFromIndex(int index, out float ratio)
+        public bool TryGetMmrDatabaseKeyFromIndex(int index, out ulong weight)
         {
-            ratio = 0f;
+            weight = 0;
             if (_mmrComponents.ContainIndex(index))
             {
-                ratio = _mmrComponents.Get(index).Ratio;
+                weight = _mmrComponents.Get(index).Weight;
                 return true;
             }
 
             return false;
         }
 
-        public bool TrySetMmrDatabaseKeyFromIndex(int index, float value)
+        public bool TrySetMmrDatabaseKeyFromIndex(int index, ulong value)
         {
             if (_mmrComponents.ContainIndex(index))
             {
-                _mmrComponents.Get(index).Ratio = value;
+                _mmrComponents.Get(index).Weight = value;
                 return true;
             }
 
