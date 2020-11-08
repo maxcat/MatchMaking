@@ -15,7 +15,7 @@ namespace MatchMaking.Tests
             {
                 int entityId = container.CreateEntity();
                 Assert.AreEqual(i, entityId);
-                container.AddPlayerInfoComponent(entityId);
+                container.AddPlayerInfoComponent(entityId, i);
             }
         }
 
@@ -28,7 +28,7 @@ namespace MatchMaking.Tests
             for (int i = 0; i < entityCount; ++i)
             {
                 int entityId = container.CreateEntity();
-                container.AddPlayerInfoComponent(entityId);
+                container.AddPlayerInfoComponent(entityId, i);
             }
 
             for(int i = 0; i < entityCount; ++i)
@@ -52,7 +52,7 @@ namespace MatchMaking.Tests
             for (int i = 0; i < entityCount; ++i)
             {
                 int entityId = container.CreateEntity();
-                container.AddPlayerInfoComponent(entityId);
+                container.AddPlayerInfoComponent(entityId, i);
             }
 
             for(int i = 0; i < entityCount; ++i)
@@ -77,7 +77,7 @@ namespace MatchMaking.Tests
             for (int i = 0; i < entityCount; ++i)
             {
                 int entityId = container.CreateEntity();
-                container.AddPlayerInfoComponent(entityId);
+                container.AddPlayerInfoComponent(entityId, i);
             }
 
             for (int i = 0; i < entityCount; ++i)
@@ -99,7 +99,7 @@ namespace MatchMaking.Tests
             }
 
             int newId = container.CreateEntity();
-            container.AddPlayerInfoComponent(newId);
+            container.AddPlayerInfoComponent(newId, -1);
             int newDatabaseId;
             Assert.IsTrue(container.TryGetPlayerInfoDatabaseKeyFromEntityId(newId, out newDatabaseId));
 

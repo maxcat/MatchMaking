@@ -19,7 +19,8 @@ namespace MatchMakingCore
             ++_lastEntityId;
             // add to all components
             // TODO: need better data structure for entity component mapping.
-            _playerInfoEntityComponentMap.Add(EMPTY_ID);
+            _playerInfoEntityMap.Add(EMPTY_ID);
+            _mmrEntityMap.Add(EMPTY_ID);
 
             return _lastEntityId;
         }

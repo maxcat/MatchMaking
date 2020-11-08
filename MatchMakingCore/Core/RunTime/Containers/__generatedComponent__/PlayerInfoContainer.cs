@@ -8,7 +8,8 @@ namespace MatchMakingCore
     public partial class Container
     {
         private LxList<PlayerInfoComponent> _playerInfoComponents = new LxList<PlayerInfoComponent>();
-        private LxList<int> _playerInfoEntityComponentMap = new LxList<int>();
+        private LxList<int> _playerInfoEntityMap = new LxList<int>();
+        private LxList<int> _entityPlayerInfoMap = new LxList<int>();
         private Queue<PlayerInfoComponent> _playerInfoPool = new Queue<PlayerInfoComponent>(COMPONENT_POOL_START_SIZE);
 
         public int PlayerInfoComponentsCount => _playerInfoComponents.Count;
@@ -40,7 +41,7 @@ namespace MatchMakingCore
         #region Help Functions
         public bool HasPlayerInfoComponent(int entityId)
         {
-            if (_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
+            if (_playerInfoEntityMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
@@ -53,21 +54,21 @@ namespace MatchMakingCore
 
         public void RemovePlayerInfoComponent(int entityId)
         {
-            if(_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
+            if(_playerInfoEntityMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
                     ReleasePlayerInfoComponent(_playerInfoComponents.Get(componentIndex));
 
                     _playerInfoComponents.Remove(componentIndex);
-                    _playerInfoEntityComponentMap.Set(entityId, Container.EMPTY_ID);
+                    _playerInfoEntityMap.Set(entityId, Container.EMPTY_ID);
                 }
             }
         }
 
         private bool TryGetPlayerInfoComponent(int entityId, out PlayerInfoComponent com)
         {
-            if (_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
+            if (_playerInfoEntityMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
@@ -81,9 +82,9 @@ namespace MatchMakingCore
         }
 
 
-        public void AddPlayerInfoComponent(int entityId)
+        public void AddPlayerInfoComponent(int entityId, int databaseKey)
         {
-            if (_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex == Container.EMPTY_ID)
+            if (_playerInfoEntityMap.TryGet(entityId, out int componentIndex) && componentIndex == Container.EMPTY_ID)
             {
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
@@ -91,11 +92,28 @@ namespace MatchMakingCore
                 }
                 else
                 {
-                    _playerInfoEntityComponentMap.Set(entityId, _playerInfoComponents.Count);
-                    _playerInfoComponents.Add(GetPlayerInfoComponentFromPool());
+                    var com = GetPlayerInfoComponentFromPool();
+                    com.DatabaseKey = databaseKey;
+
+                    _playerInfoEntityMap.Set(entityId, _playerInfoComponents.Count);
+                    _playerInfoComponents.Add(com);
+                    _entityPlayerInfoMap.Add(entityId);
                 }
             }
         }
+
+        public int GetPlayerInfoEntityId(int index)
+        {
+            if(_entityPlayerInfoMap.TryGet(index, out int result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new LxException($"invalid index {index}");
+            }
+        }
+
         #endregion
 
         #region Field Access Functions

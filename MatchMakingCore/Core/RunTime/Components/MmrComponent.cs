@@ -8,6 +8,11 @@ namespace MatchMakingCore
         public ulong Weight = 0;
         public int CompareTo(MmrComponent other)
         {
+            if (other == null)
+            {
+                return 1;
+            }
+
             return Weight.CompareTo(other.Weight);
         }
 

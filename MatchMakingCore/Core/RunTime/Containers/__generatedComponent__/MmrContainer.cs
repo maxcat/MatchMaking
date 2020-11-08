@@ -8,7 +8,8 @@ namespace MatchMakingCore
     public partial class Container
     {
         private LxList<MmrComponent> _mmrComponents = new LxList<MmrComponent>();
-        private LxList<int> _mmrEntityComponentMap = new LxList<int>();
+        private LxList<int> _mmrEntityMap = new LxList<int>();
+        private LxList<int> _entityMmrMap = new LxList<int>();
         private Queue<MmrComponent> _mmrPool = new Queue<MmrComponent>(COMPONENT_POOL_START_SIZE);
 
         public int MmrComponentsCount => _mmrComponents.Count;
@@ -40,7 +41,7 @@ namespace MatchMakingCore
         #region Help Functions
         public bool HasMmrComponent(int entityId)
         {
-            if (_mmrEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
+            if (_mmrEntityMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
                 if (_mmrComponents.ContainIndex(componentIndex))
                 {
@@ -53,21 +54,21 @@ namespace MatchMakingCore
 
         public void RemoveMmrComponent(int entityId)
         {
-            if (_mmrEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
+            if (_mmrEntityMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
                 if (_mmrComponents.ContainIndex(componentIndex))
                 {
                     ReleaseMmrComponent(_mmrComponents.Get(componentIndex));
 
                     _mmrComponents.Remove(componentIndex);
-                    _mmrEntityComponentMap.Set(entityId, Container.EMPTY_ID);
+                    _mmrEntityMap.Set(entityId, Container.EMPTY_ID);
                 }
             }
         }
 
         private bool TryGetMmrComponent(int entityId, out MmrComponent com)
         {
-            if (_mmrEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
+            if (_mmrEntityMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
                 if (_mmrComponents.ContainIndex(componentIndex))
                 {
@@ -81,9 +82,9 @@ namespace MatchMakingCore
         }
 
 
-        public void AddMmrComponent(int entityId)
+        public void AddMmrComponent(int entityId, ulong weight)
         {
-            if (_mmrEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex == Container.EMPTY_ID)
+            if (_mmrEntityMap.TryGet(entityId, out int componentIndex) && componentIndex == Container.EMPTY_ID)
             {
                 if (_mmrComponents.ContainIndex(componentIndex))
                 {
@@ -91,16 +92,40 @@ namespace MatchMakingCore
                 }
                 else
                 {
-                    _mmrEntityComponentMap.Set(entityId, _mmrComponents.Count);
+                    var com = GetMmrComponentFromPool();
+                    com.Weight = weight;
                     // TODO: need to figure out way of generate the unique flag from code.
-                    _mmrComponents.Add(GetMmrComponentFromPool(), _mmrComponentComparer, false);
+                    int insertIndex = _mmrComponents.Add(com, _mmrComponentComparer, false);
+                    if(insertIndex >= 0)
+                    {
+                        _entityMmrMap.Insert(insertIndex, entityId);
+                    }
+
+                    // TODO: optimise the entity to component map
+                    for(int i = 0; i < _entityMmrMap.Count; ++i)
+                    {
+                        _mmrEntityMap.Set(_entityMmrMap.Get(i), i);
+                    }
                 }
             }
         }
+
+        public int GetMMrEntityId(int index)
+        {
+            if (_entityMmrMap.TryGet(index, out int result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new LxException($"invalid index {index}");
+            }
+        }
+
         #endregion
 
         #region Field Access Functions
-        public bool TryGetMmrRatioFromEntityId(int entityId, out ulong weight)
+        public bool TryGetMmrWeightFromEntityId(int entityId, out ulong weight)
         {
             if (TryGetMmrComponent(entityId, out MmrComponent com))
             {
@@ -114,7 +139,7 @@ namespace MatchMakingCore
             }
         }
 
-        public bool TrySetMmrDatabaseKeyFromEntityId(int entityId, ulong weight)
+        public bool TrySetMmrWeightFromEntityId(int entityId, ulong weight)
         {
             if (TryGetMmrComponent(entityId, out MmrComponent com))
             {
@@ -127,7 +152,7 @@ namespace MatchMakingCore
             }
         }
 
-        public bool TryGetMmrDatabaseKeyFromIndex(int index, out ulong weight)
+        public bool TryGetMmrWeightFromIndex(int index, out ulong weight)
         {
             weight = 0;
             if (_mmrComponents.ContainIndex(index))
@@ -139,7 +164,7 @@ namespace MatchMakingCore
             return false;
         }
 
-        public bool TrySetMmrDatabaseKeyFromIndex(int index, ulong value)
+        public bool TrySetMmrWeightFromIndex(int index, ulong value)
         {
             if (_mmrComponents.ContainIndex(index))
             {
