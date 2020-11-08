@@ -39,6 +39,7 @@ namespace MatchMakingCore
 
                 long weight = GenerateMmrWeight(playerData, container.MmConfig);
                 container.AddMmrComponent(entityId, weight);
+                container.AddWaitingComponent(entityId, 0);
                 
                 playerData.IsAvailable = false;
             }

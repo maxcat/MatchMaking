@@ -55,6 +55,7 @@ namespace MatchMakingCore
             {
                 container.RemoveMmrComponent(entityId);
                 container.RemovePlayerInfoComponent(entityId);
+                container.RemoveWaitingComponent(entityId);
             }
 
             removeEntityIds.Clear();
