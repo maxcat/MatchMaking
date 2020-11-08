@@ -90,7 +90,8 @@ namespace MatchMakingCore
                 else
                 {
                     _mmrEntityComponentMap.Set(entityId, _mmrComponents.Count);
-                    _mmrComponents.Add(GetMmrComponentFromPool());
+                    // TODO: need to figure out way of generate the unique flag from code.
+                    _mmrComponents.Add(GetMmrComponentFromPool(), _mmrComponentComparer, false);
                 }
             }
         }
