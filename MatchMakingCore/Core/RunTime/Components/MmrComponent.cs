@@ -1,10 +1,13 @@
 ﻿using System;
-namespace MatchMakingCore.Core.Components
+namespace MatchMakingCore
 {
-    public class MmrComponent
+    public class MmrComponent : IComponent
     {
-        public MmrComponent()
+        public float Ratio = 0f;
+
+        public void Reset()
         {
+            Ratio = 0f;
         }
     }
 }
