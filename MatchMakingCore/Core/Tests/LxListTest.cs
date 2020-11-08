@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using System.Diagnostics;
 using System;
-using UnityEngine;
-using UnityEngine.TestTools;
 using MatchMakingCore;
 using Debug = UnityEngine.Debug;
 
@@ -12,18 +9,6 @@ namespace MatchMaking.Tests
 {
     public class LxListTest
     {
-        public static Stopwatch Measure(Action action, int iteration = 1)
-        {
-            Stopwatch watch = Stopwatch.StartNew();
-            for(int i = 0; i < iteration; ++i)
-            {
-                action.Invoke();
-            }
-            watch.Stop();
-
-            return watch;
-        }
-
         private LxList<int> InitList(int count)
         {
             var list = new LxList<int>();
@@ -186,7 +171,7 @@ namespace MatchMaking.Tests
 
             Stopwatch watch;
             // assign test
-            watch =  Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 for (int i = 0; i < count; ++i)
                 {
@@ -195,7 +180,7 @@ namespace MatchMaking.Tests
             }, iteration);
             Debug.Log($"array assign ticks {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 for (int i = 0; i < count; ++i)
                 {
@@ -205,7 +190,7 @@ namespace MatchMaking.Tests
             }, iteration); 
             Debug.Log($"list assign ticks {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 for (int i = 0; i < count; ++i)
                 {
@@ -239,19 +224,19 @@ namespace MatchMaking.Tests
             }
 
             // access test
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 result = array[index];
             }, iteration);
             Debug.Log($"array access ticks {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 result = list[index];
             }, iteration);
             Debug.Log($"list access ticks {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 result = lxList.Get(index);
             }, iteration);
@@ -278,7 +263,7 @@ namespace MatchMaking.Tests
                 lxList.Add(i);
             }
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 int[] newArray;
                 // insert head test
@@ -289,13 +274,13 @@ namespace MatchMaking.Tests
             }, iteration);
             Debug.Log($"array insert head {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 list.Insert(0, -1);
             }, iteration);
             Debug.Log($"list insert head {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 lxList.Insert(0, -1);
             }, iteration);
@@ -325,7 +310,7 @@ namespace MatchMaking.Tests
                 lxList.Add(i);
             }
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 int[] newArray;
                 newArray = new int[array.Length + 1];
@@ -335,20 +320,20 @@ namespace MatchMaking.Tests
             }, iteration);
             Debug.Log($"array insert tail copy {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 Array.Resize(ref array, array.Length + 1);
                 array[array.Length - 1] = -1;
             }, iteration);
             Debug.Log($"array insert tail resize {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 list.Add(-1);
             }, iteration);
             Debug.Log($"list insert tail {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 lxList.Add(-1);
             }, iteration);
@@ -383,13 +368,13 @@ namespace MatchMaking.Tests
             // insert middle
             int middleIndex = count / 2;
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 lxList.Insert(middleIndex, -1);
             }, iteration);
             Debug.Log($"lxlist insert middle ticks {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 newArray = new int[array.Length + 1];
                 newArray[middleIndex] = -1;
@@ -399,7 +384,7 @@ namespace MatchMaking.Tests
             }, iteration);
             Debug.Log($"array insert middle {watch.ElapsedMilliseconds}");
 
-            watch = Measure(() =>
+            watch = MatchmakingTest.Measure(() =>
             {
                 list.Insert(middleIndex, -1);
             }, iteration);

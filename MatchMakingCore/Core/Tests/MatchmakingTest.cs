@@ -1,22 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
-using UnityEngine;
+﻿using System;
+using System.Collections;
+using System.Diagnostics;
 using UnityEngine.TestTools;
 
 namespace MatchMaking.Tests
 {
     public class MatchmakingTest
     {
-        // A Test behaves as an ordinary method
-        [Test]
-        public void MatchmakingTestSimplePasses()
+        public static Stopwatch Measure(Action action, int iteration = 1)
         {
-            // Use the Assert class to test conditions
+            Stopwatch watch = Stopwatch.StartNew();
+            for (int i = 0; i < iteration; ++i)
+            {
+                action.Invoke();
+            }
+            watch.Stop();
+
+            return watch;
         }
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
         [UnityTest]
         public IEnumerator MatchmakingTestWithEnumeratorPasses()
         {

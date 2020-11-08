@@ -50,6 +50,18 @@ namespace MatchMakingCore
             throw new LxException($"index out of range {index}");
         }
 
+        public bool TryGet(int index, out T value)
+        {
+            if (index >= 0 && index <= _lastIndex)
+            {
+                value = _array[index];
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
         public bool ContainIndex(int index)
         {
             return index >= 0 && index < Count;

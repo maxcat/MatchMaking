@@ -14,18 +14,23 @@ namespace MatchMakingCore
         #region Pooling
         private PlayerInfoComponent GetPlayerInfoComponentFromPool()
         {
+            PlayerInfoComponent result;
             if(_playerInfoPool.Count > 0)
             {
-                return _playerInfoPool.Dequeue();
+                result = _playerInfoPool.Dequeue();
             }
             else
             {
-                return new PlayerInfoComponent();
+                result = new PlayerInfoComponent();
             }
+
+            result.Reset();
+            return result;
         }
 
         public void ReleasePlayerInfoComponent(PlayerInfoComponent com)
         {
+            com.Reset();
             _playerInfoPool.Enqueue(com);
         }
         #endregion
@@ -33,10 +38,8 @@ namespace MatchMakingCore
         #region Help Functions
         public bool HasPlayerInfoComponent(int entityId)
         {
-            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
+            if (_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
-                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
-
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
                     return true;
@@ -48,26 +51,22 @@ namespace MatchMakingCore
 
         public void RemovePlayerInfoComponent(int entityId)
         {
-            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
+            if(_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
-                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
-
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
                     ReleasePlayerInfoComponent(_playerInfoComponents.Get(componentIndex));
 
                     _playerInfoComponents.Remove(componentIndex);
-                    _playerInfoEntityComponentMap.Remove(entityId);
+                    _playerInfoEntityComponentMap.Set(entityId, Container.EMPTY_ID);
                 }
             }
         }
 
         private bool TryGetPlayerInfoComponent(int entityId, out PlayerInfoComponent com)
         {
-            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
+            if (_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex != Container.EMPTY_ID)
             {
-                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
-
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
                     com = _playerInfoComponents.Get(componentIndex);
@@ -82,9 +81,8 @@ namespace MatchMakingCore
 
         public void AddPlayerInfoComponent(int entityId)
         {
-            if (_playerInfoEntityComponentMap.ContainIndex(entityId))
+            if (_playerInfoEntityComponentMap.TryGet(entityId, out int componentIndex) && componentIndex == Container.EMPTY_ID)
             {
-                int componentIndex = _playerInfoEntityComponentMap.Get(entityId);
                 if (_playerInfoComponents.ContainIndex(componentIndex))
                 {
                     return;
