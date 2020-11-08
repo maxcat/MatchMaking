@@ -5,8 +5,8 @@ namespace MatchMakingCore
     public class PlayerData
     {
         [JsonProperty("name")] public string Name;
-        [JsonProperty("wins")] public string Wins;
-        [JsonProperty("loses")] public string Loses;
+        [JsonProperty("wins")] public ulong Wins;
+        [JsonProperty("loses")] public ulong Loses;
         [JsonIgnore] public bool IsAvailable = true;
 
         public override string ToString()
