@@ -1,6 +1,6 @@
 {
-    "WinRatioWeight": 1000,
-    "WinWeight": 1000000,
+    "LoseWeight": 1,
+    "WinWeight": 10,
     "MaxDifferenceAllowed": 30,
-    "WaitBonusWeight": 100
+    "WaitBonusWeight": 2
 }

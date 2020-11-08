@@ -5,6 +5,46 @@ namespace MatchMaking.Tests
 {
     public class CreateJoinRequestSystemTest
     {
+        public struct JoinRequestResult
+        {
+            public string Name;
+            public long Weight;
+        }
+
+        private JoinRequestResult[] _result = new JoinRequestResult[]
+        {
+            new JoinRequestResult
+            {
+                Name = "player4",
+                Weight = 961,
+            },
+            new JoinRequestResult
+            {
+                Name = "player1",
+                Weight = 961,
+            },
+            new JoinRequestResult
+            {
+                Name = "player5",
+                Weight = 440,
+            },
+            new JoinRequestResult
+            {
+                Name = "player3",
+                Weight = 320,
+            },
+            new JoinRequestResult
+            {
+                Name = "player6",
+                Weight = 0,
+            },
+            new JoinRequestResult
+            {
+                Name = "player2",
+                Weight = -12,
+            }
+        };
+
         [Test]
         public void Test()
         {
@@ -12,10 +52,10 @@ namespace MatchMaking.Tests
 
             Container container = new Container();
             container.InitComponentComparers();
-            container.InitPlayerDataBase();
-            container.InitMatchmakingCofig();
+            container.SetPlayerDatabase(MatchmakingTest.TestPlayers);
+            container.MmConfig = MatchmakingTest.TestConfig;
 
-            var createJoinRequestSystem = new CreateJoinRequestSystem();
+            var createJoinRequestSystem = new CreateJoinRequestSystem(container.PlayerDatabaseSize);
 
             createJoinRequestSystem.Execute(container);
 
@@ -37,7 +77,7 @@ namespace MatchMaking.Tests
 
             for(int i = 0; i < container.MmrComponentsCount; ++i)
             {
-                if(container.TryGetMmrWeightFromIndex(i, out ulong weight))
+                if(container.TryGetMmrWeightFromIndex(i, out long weight))
                 {
                     int entityId = container.GetMMrEntityId(i);
                     if(container.TryGetPlayerInfoDatabaseKeyFromEntityId(entityId, out int databaseKey))
@@ -45,6 +85,9 @@ namespace MatchMaking.Tests
                         PlayerData player = container.GetPlayerData(databaseKey);
 
                         LxLog.Log($"{player.Name} win {player.Wins} lose {player.Loses} weight {weight}");
+                        JoinRequestResult result = _result[i];
+                        Assert.AreEqual(result.Name, player.Name);
+                        Assert.AreEqual(result.Weight, weight);
                     }
                 }
             }

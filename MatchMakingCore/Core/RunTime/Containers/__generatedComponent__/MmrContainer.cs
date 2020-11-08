@@ -82,7 +82,7 @@ namespace MatchMakingCore
         }
 
 
-        public void AddMmrComponent(int entityId, ulong weight)
+        public void AddMmrComponent(int entityId, long weight)
         {
             if (_mmrEntityMap.TryGet(entityId, out int componentIndex) && componentIndex == Container.EMPTY_ID)
             {
@@ -125,7 +125,7 @@ namespace MatchMakingCore
         #endregion
 
         #region Field Access Functions
-        public bool TryGetMmrWeightFromEntityId(int entityId, out ulong weight)
+        public bool TryGetMmrWeightFromEntityId(int entityId, out long weight)
         {
             if (TryGetMmrComponent(entityId, out MmrComponent com))
             {
@@ -139,7 +139,7 @@ namespace MatchMakingCore
             }
         }
 
-        public bool TrySetMmrWeightFromEntityId(int entityId, ulong weight)
+        public bool TrySetMmrWeightFromEntityId(int entityId, long weight)
         {
             if (TryGetMmrComponent(entityId, out MmrComponent com))
             {
@@ -152,7 +152,7 @@ namespace MatchMakingCore
             }
         }
 
-        public bool TryGetMmrWeightFromIndex(int index, out ulong weight)
+        public bool TryGetMmrWeightFromIndex(int index, out long weight)
         {
             weight = 0;
             if (_mmrComponents.ContainIndex(index))
@@ -164,7 +164,7 @@ namespace MatchMakingCore
             return false;
         }
 
-        public bool TrySetMmrWeightFromIndex(int index, ulong value)
+        public bool TrySetMmrWeightFromIndex(int index, long value)
         {
             if (_mmrComponents.ContainIndex(index))
             {

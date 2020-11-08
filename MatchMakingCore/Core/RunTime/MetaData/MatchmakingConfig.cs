@@ -2,14 +2,14 @@
 {
     public class MatchmakingConfig 
     {
-        public ulong WinRatioWeight;
-        public ulong WinWeight;
-        public ulong MaxDifferenceAllowed;
-        public ulong WaitBonusWeight;
+        public long LoseWeight;
+        public long WinWeight;
+        public long MaxDifferenceAllowed;
+        public long WaitBonusWeight;
 
         public override string ToString()
         {
-            return $"win ratio weight {WinRatioWeight} win weight {WinWeight} max difference allowed {MaxDifferenceAllowed} wait bonus weight {WaitBonusWeight}";
+            return $"lose weight {LoseWeight} win weight {WinWeight} max difference allowed {MaxDifferenceAllowed} wait bonus weight {WaitBonusWeight}";
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
-using UnityEngine.TestTools;
+using MatchMakingCore;
 
 namespace MatchMaking.Tests
 {
@@ -19,14 +18,52 @@ namespace MatchMaking.Tests
             return watch;
         }
 
-        
-
-        [UnityTest]
-        public IEnumerator MatchmakingTestWithEnumeratorPasses()
+        public static PlayerData[] TestPlayers = new PlayerData[]
         {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
-        }
+            new PlayerData
+            {
+                Name = "player1",
+                Wins = 100,
+                Loses = 39
+            },
+            new PlayerData
+            {
+                Name = "player2",
+                Wins = 0,
+                Loses = 12
+            },
+            new PlayerData
+            {
+                Name = "player3",
+                Wins = 32,
+                Loses = 0
+            },
+            new PlayerData
+            {
+                Name = "player4",
+                Wins = 100,
+                Loses = 39
+            },
+            new PlayerData
+            {
+                Name = "player5",
+                Wins = 44,
+                Loses = 0
+            },
+            new PlayerData
+            {
+                Name = "player6",
+                Wins = 0,
+                Loses = 0
+            },
+        };
+
+        public static MatchmakingConfig TestConfig = new MatchmakingConfig
+        {
+            LoseWeight = 1,
+            WinWeight = 10,
+            MaxDifferenceAllowed = 30,
+            WaitBonusWeight = 2
+        };
     }
 }

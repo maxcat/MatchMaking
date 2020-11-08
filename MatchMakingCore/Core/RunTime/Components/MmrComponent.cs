@@ -5,7 +5,7 @@ namespace MatchMakingCore
 {
     public class MmrComponent : IComponent, IComparable<MmrComponent>
     {
-        public ulong Weight = 0;
+        public long Weight = 0;
         public int CompareTo(MmrComponent other)
         {
             if (other == null)

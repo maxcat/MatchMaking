@@ -7,16 +7,26 @@ namespace MatchMakingCore
     public class CreateJoinRequestSystem : ISystem
     {
         private Random _random;
+        private int _count = 0;
 
-        public CreateJoinRequestSystem()
+        public CreateJoinRequestSystem(int count = 0)
         {
             _random = new Random();
+            _count = count;
         }
 
         public void Execute(Container container)
         {
-            int count = _random.Next(1, container.PlayerDatabaseSize);
-            //int count = 10;
+            int count;
+            if(_count > 0)
+            {
+                count = _count;
+            }
+            else
+            {
+                count = _random.Next(1, container.PlayerDatabaseSize);
+            }
+
             LxLog.Log($"generate {count} requests");
             List<int> requestPlayers = container.GenerateJoinRequestKeys(count);
 
@@ -27,22 +37,17 @@ namespace MatchMakingCore
 
                 PlayerData playerData = container.GetPlayerData(requestPlayers[i]);
 
-                ulong weight = GenerateMmrWeight(playerData, container.MmConfig);
+                long weight = GenerateMmrWeight(playerData, container.MmConfig);
                 container.AddMmrComponent(entityId, weight);
                 
                 playerData.IsAvailable = false;
             }
         }
 
-        private ulong GenerateMmrWeight(PlayerData data, MatchmakingConfig config)
+        private long GenerateMmrWeight(PlayerData data, MatchmakingConfig config)
         {
-            ulong weight;
-            ulong totalGames = data.Wins + data.Loses;
-            weight = data.Wins > config.WinWeight ? config.WinWeight : data.Wins;
-            if(totalGames > 0)
-            {
-                weight += (data.Wins * config.WinRatioWeight / totalGames) * config.WinWeight;
-            }
+            long weight;
+            weight = (long)data.Wins * config.WinWeight - (long)data.Loses * config.LoseWeight;
 
             return weight;
         }

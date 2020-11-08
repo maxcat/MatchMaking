@@ -36,6 +36,11 @@ namespace MatchMakingCore
             }
         }
 
+        public void SetPlayerDatabase(PlayerData[] players)
+        {
+            _playerDataBase = players;
+        }
+
         public void InitMatchmakingCofig()
         {
             string path;
