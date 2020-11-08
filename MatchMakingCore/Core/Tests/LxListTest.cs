@@ -12,6 +12,18 @@ namespace MatchMaking.Tests
 {
     public class LxListTest
     {
+        public static Stopwatch Measure(Action action, int iteration = 1)
+        {
+            Stopwatch watch = Stopwatch.StartNew();
+            for(int i = 0; i < iteration; ++i)
+            {
+                action.Invoke();
+            }
+            watch.Stop();
+
+            return watch;
+        }
+
         private LxList<int> InitList(int count)
         {
             var list = new LxList<int>();
@@ -163,151 +175,235 @@ namespace MatchMaking.Tests
         }
 
         [Test]
-        public void BenchmarkTest()
+        public void BenchmarkAssign()
         {
             int count = 128;
             int iteration = 10000;
 
             int[] array = new int[count];
             List<int> list = new List<int>(count);
+            LxList<int> lxList = new LxList<int>(count);
 
-            Stopwatch watch = new Stopwatch();
-            int result;
-            int index = 10;
-
-            watch.Start();
-            watch.Stop();
-
+            Stopwatch watch;
             // assign test
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch =  Measure(() =>
             {
                 for (int i = 0; i < count; ++i)
                 {
                     array[i] = i;
                 }
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"array assign ticks {watch.ElapsedMilliseconds}");
 
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch = Measure(() =>
             {
                 for (int i = 0; i < count; ++i)
                 {
                     list.Add(i);
                 }
-            }
-            watch.Stop();
+                list.Clear();
+            }, iteration); 
             Debug.Log($"list assign ticks {watch.ElapsedMilliseconds}");
 
+            watch = Measure(() =>
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    lxList.Add(i);
+                }
+                lxList.Reset();
+            }, iteration);
+            Debug.Log($"lx list assign ticks {watch.ElapsedMilliseconds}");
+        }
+
+        [Test]
+        public void BenchmarkGet()
+        {
+            int count = 128;
+            int iteration = 1000000;
+
+            int[] array = new int[count];
+            List<int> list = new List<int>(count);
+            LxList<int> lxList = new LxList<int>(count);
+
+            Stopwatch watch;
+            int result;
+            int index = 10;
+
+            // assign test
+            for (int i = 0; i < count; ++i)
+            {
+                array[i] = i;
+                list.Add(i);
+                lxList.Add(i);
+            }
+
             // access test
-            watch.Restart();
-            for (int i = 0; i < iteration; ++i)
+            watch = Measure(() =>
             {
                 result = array[index];
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"array access ticks {watch.ElapsedMilliseconds}");
 
-            watch.Restart();
-            for (int i = 0; i < iteration; ++i)
+            watch = Measure(() =>
             {
                 result = list[index];
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"list access ticks {watch.ElapsedMilliseconds}");
 
-            // resize test
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch = Measure(() =>
             {
-                Array.Resize(ref array, array.Length + 1);
-            }
-            watch.Stop();
-            Debug.Log($"array resize ticks {watch.ElapsedMilliseconds}");
+                result = lxList.Get(index);
+            }, iteration);
+            Debug.Log($"lx list access ticks {watch.ElapsedMilliseconds}");
+        }
 
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
-            {
-                list.Capacity = list.Count + 1;
-            }
-            watch.Stop();
-            Debug.Log($"list resize ticks {watch.ElapsedMilliseconds}");
+        [Test]
+        public void BenchmarkInsertHead()
+        {
+            int count = 128;
+            int iteration = 10000;
 
-            int[] newArray;
-            // insert head test
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            int[] array = new int[count];
+            List<int> list = new List<int>(count);
+            LxList<int> lxList = new LxList<int>(count);
+
+            Stopwatch watch;
+
+            // assign test
+            for (int i = 0; i < count; ++i)
             {
+                array[i] = i;
+                list.Add(i);
+                lxList.Add(i);
+            }
+
+            watch = Measure(() =>
+            {
+                int[] newArray;
+                // insert head test
                 newArray = new int[array.Length + 1];
                 newArray[0] = -1;
                 Array.Copy(array, 0, newArray, 1, array.Length);
                 array = newArray;
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"array insert head {watch.ElapsedMilliseconds}");
 
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch = Measure(() =>
             {
                 list.Insert(0, -1);
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"list insert head {watch.ElapsedMilliseconds}");
 
-            // insert tail test
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch = Measure(() =>
             {
+                lxList.Insert(0, -1);
+            }, iteration);
+            Debug.Log($"lxList insert head {watch.ElapsedMilliseconds}");
+        }
+
+        [Test]
+        public void BenchmarkInsertTail()
+        {
+            int count = 128;
+            int iteration = 10000;
+
+            int[] array = new int[count];
+            List<int> list = new List<int>(count);
+            LxList<int> lxList = new LxList<int>(count);
+
+            Stopwatch watch = new Stopwatch();
+            
+            watch.Start();
+            watch.Stop();
+
+            // assign test
+            for (int i = 0; i < count; ++i)
+            {
+                array[i] = i;
+                list.Add(i);
+                lxList.Add(i);
+            }
+
+            watch = Measure(() =>
+            {
+                int[] newArray;
                 newArray = new int[array.Length + 1];
                 newArray[array.Length] = -1;
                 Array.Copy(array, 0, newArray, 1, array.Length);
                 array = newArray;
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"array insert tail copy {watch.ElapsedMilliseconds}");
 
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch = Measure(() =>
             {
                 Array.Resize(ref array, array.Length + 1);
                 array[array.Length - 1] = -1;
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"array insert tail resize {watch.ElapsedMilliseconds}");
 
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch = Measure(() =>
             {
                 list.Add(-1);
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"list insert tail {watch.ElapsedMilliseconds}");
 
-            // insert middle
-            int middleIndex = array.Length / 2;
+            watch = Measure(() =>
+            {
+                lxList.Add(-1);
+            }, iteration);
+            Debug.Log($"lxList insert tail {watch.ElapsedMilliseconds}");
+        }
 
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+        [Test]
+        public void BenchmarkInsertMiddle()
+        {
+            int count = 100;
+
+            int[] array = new int[count];
+            List<int> list = new List<int>(count);
+            LxList<int> lxList = new LxList<int>(count);
+
+            Stopwatch watch = new Stopwatch();
+
+            watch.Start();
+            watch.Stop();
+
+            // assign test
+            for (int i = 0; i < count; ++i)
+            {
+                array[i] = i;
+                list.Add(i);
+                lxList.Add(i);
+            }
+
+            int iteration = 10000;
+
+            int[] newArray;
+            // insert middle
+            int middleIndex = count / 2;
+
+            watch = Measure(() =>
+            {
+                lxList.Insert(middleIndex, -1);
+            }, iteration);
+            Debug.Log($"lxlist insert middle ticks {watch.ElapsedMilliseconds}");
+
+            watch = Measure(() =>
             {
                 newArray = new int[array.Length + 1];
                 newArray[middleIndex] = -1;
                 Array.Copy(array, 0, newArray, 0, middleIndex);
                 Array.Copy(array, middleIndex, newArray, middleIndex + 1, array.Length - middleIndex);
                 array = newArray;
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"array insert middle {watch.ElapsedMilliseconds}");
 
-            watch.Restart();
-            for (int tmp = 0; tmp < iteration; ++tmp)
+            watch = Measure(() =>
             {
                 list.Insert(middleIndex, -1);
-            }
-            watch.Stop();
+            }, iteration);
             Debug.Log($"list insert middle ticks {watch.ElapsedMilliseconds}");
-
         }
     }
 }

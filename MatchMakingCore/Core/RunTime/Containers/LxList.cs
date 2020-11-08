@@ -7,6 +7,7 @@ namespace MatchMakingCore
         private readonly int START_LENGTH = 64;
         private int _lastIndex;
         private T[] _array;
+        private T[] _tmp;
         public int Count => _lastIndex + 1;
 
         public LxList(int length)
@@ -14,12 +15,14 @@ namespace MatchMakingCore
             _lastIndex = -1;
             int actualLength = GetClosetLength(length);
             _array = new T[actualLength];
+            _tmp = new T[actualLength];
         }
 
         public LxList()
         {
             _lastIndex = -1;
             _array = new T[START_LENGTH];
+            _tmp = new T[START_LENGTH];
         }
 
         private int GetClosetLength(int length)
@@ -34,7 +37,7 @@ namespace MatchMakingCore
 
         public void Reset()
         {
-            _lastIndex = 0;
+            _lastIndex = -1;
         }
 
         public T Get(int index)
@@ -57,6 +60,7 @@ namespace MatchMakingCore
             if (_lastIndex + 1 >= _array.Length)
             {
                 Array.Resize(ref _array, _array.Length * 2);
+                Array.Resize(ref _tmp, _tmp.Length * 2);
             }
             ++_lastIndex;
             _array[_lastIndex] = value;
@@ -81,12 +85,11 @@ namespace MatchMakingCore
                 throw new LxException($"invalid remove index {index}");
             }
 
-            T[] tmp = new T[_array.Length];
             if(index == 0)
             {
                 // remove head
-                Array.Copy(_array, 1, tmp, 0, Count - 1);
-                _array = tmp;
+                Array.Copy(_array, 1, _tmp, 0, Count - 1);
+                Swap();
             }
             else if (index == _lastIndex)
             {
@@ -96,12 +99,19 @@ namespace MatchMakingCore
             else
             {
                 // remove middle
-                Array.Copy(_array, 0, tmp, 0, index);
-                Array.Copy(_array, index + 1, tmp, index, Count - index);
-                _array = tmp;
+                Array.Copy(_array, 0, _tmp, 0, index);
+                Array.Copy(_array, index + 1, _tmp, index, Count - index);
+                Swap();
             }
 
             --_lastIndex;
+        }
+
+        private void Swap()
+        {
+            var tmp = _array;
+            _array = _tmp;
+            _tmp = tmp;
         }
 
         public void Insert(int index, T value)
@@ -115,22 +125,22 @@ namespace MatchMakingCore
             if (_lastIndex + 1 >= _array.Length)
             {
                 arrayLength *= 2;
+                Array.Resize(ref _tmp, arrayLength);
+                Array.Resize(ref _array, arrayLength);
             }
-            
+
             if (index == 0)
             {
                 // insert head
-                T[] tmp  = new T[arrayLength];
-                Array.Copy(_array, 0, tmp, 1, Count);
-                _array = tmp;
+                Array.Copy(_array, 0, _tmp, 1, Count);
+                Swap();
             }
             else
             {
                 // insert middle
-                T[] tmp = new T[arrayLength];
-                Array.Copy(_array, 0, tmp, 0, index + 1);
-                Array.Copy(_array, index, tmp, index + 1, Count - index + 1);
-                _array = tmp;
+                Array.Copy(_array, 0, _tmp, 0, index + 1);
+                Array.Copy(_array, index, _tmp, index + 1, Count - index);
+                Swap();
             }
 
             ++_lastIndex;
