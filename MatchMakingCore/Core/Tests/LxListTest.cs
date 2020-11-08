@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System.Diagnostics;
 using System;
+using System.Text;
 using MatchMakingCore;
 using Debug = UnityEngine.Debug;
 
@@ -18,6 +19,86 @@ namespace MatchMaking.Tests
             }
 
             return list;
+        }
+
+        public class SortTestData : IComparable<SortTestData>
+        {
+            public int Data;
+
+            public int CompareTo(SortTestData other)
+            {
+                if (other == null)
+                {
+                    return 1;
+                }
+
+                return Data.CompareTo(other.Data);
+            }
+        }
+
+        public class SortTestComparer : IComparer<SortTestData>
+        {
+            public int Compare(SortTestData x, SortTestData y)
+            {
+                //return x.Data.CompareTo(y.Data);
+                return y.Data.CompareTo(x.Data);
+            }
+        }
+
+        [Test]
+        public void SortTest()
+        {
+            int count = 100;
+            LxList<SortTestData> list = new LxList<SortTestData>();
+            var comparer = new SortTestComparer();
+            for(int i = 0; i < count; ++i)
+            {
+                list.Add(new SortTestData { Data = i }, comparer, true);
+            }
+
+            for(int i = 0; i < count; ++i)
+            {
+                Assert.AreEqual(count - i - 1, list.Get(i).Data);
+            }
+
+            
+            int[] testInput = new int[]
+            {
+                9, 8, 7, 2, 33, 144, 22, 13, 44, 33
+            };
+
+            int[] testOuputUnique = new int[]
+            {
+                144, 44, 33, 22, 13, 9, 8, 7, 2
+            };
+
+            int[] testOuputNoUnique = new int[]
+            {
+                144, 44, 33, 33, 22, 13, 9, 8, 7, 2
+            };
+
+            list = new LxList<SortTestData>();
+            for (int i = 0; i < testInput.Length; ++i)
+            {
+                list.Add(new SortTestData { Data = testInput[i] }, comparer, true);
+            }
+
+            for(int i = 0; i < list.Count; ++i)
+            {
+                Assert.AreEqual(testOuputUnique[i], list.Get(i).Data);
+            }
+
+            list = new LxList<SortTestData>();
+            for (int i = 0; i < testInput.Length; ++i)
+            {
+                list.Add(new SortTestData { Data = testInput[i] }, comparer, false);
+            }
+
+            for (int i = 0; i < list.Count; ++i)
+            {
+                Assert.AreEqual(testOuputNoUnique[i], list.Get(i).Data);
+            }
+
         }
 
         [Test]

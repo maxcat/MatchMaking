@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MatchMakingCore
 {
@@ -76,6 +77,46 @@ namespace MatchMakingCore
             }
             ++_lastIndex;
             _array[_lastIndex] = value;
+        }
+
+        public void Add(T value, IComparer<T> comparer, bool unique)
+        {
+            if(comparer == null)
+            {
+                throw new LxException($"comparer can not be null.");
+            }
+
+            if(Count <= 0)
+            {
+                Add(value);
+                return;
+            }
+
+            int compareResult = Array.BinarySearch(_array, 0, Count, value, comparer);
+            if(compareResult < 0)
+            {
+                int insertIndex = ~compareResult;
+                if(insertIndex > _lastIndex)
+                {
+                    Add(value);
+                }
+                else
+                {
+                    Insert(insertIndex, value);
+                }
+            }
+            else if(compareResult >= 0 && !unique)
+            {
+                int insertIndex = compareResult;
+                if (insertIndex > _lastIndex)
+                {
+                    Add(value);
+                }
+                else
+                {
+                    Insert(insertIndex, value);
+                }
+            }
         }
 
         public void Set(int index, T value)
