@@ -22,6 +22,7 @@ namespace MatchMakingCore
             _playerInfoEntityMap.Add(EMPTY_ID);
             _mmrEntityMap.Add(EMPTY_ID);
             _roomInfoEntityMap.Add(EMPTY_ID);
+            _waitingEntityMap.Add(EMPTY_ID);
 
             return _lastEntityId;
         }
