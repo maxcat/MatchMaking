@@ -78,25 +78,40 @@ namespace MatchMaking.Tests
             };
 
             list = new LxList<SortTestData>();
+            LxList<int> subList = new LxList<int>();
             for (int i = 0; i < testInput.Length; ++i)
             {
-                list.Add(new SortTestData { Data = testInput[i] }, comparer, true);
+                int insertIndex = list.Add(new SortTestData { Data = testInput[i] }, comparer, true);
+                if(insertIndex >= 0)
+                {
+                    subList.Insert(insertIndex, testInput[i]);
+                }
             }
+
+            Assert.AreEqual(subList.Count, list.Count);
 
             for(int i = 0; i < list.Count; ++i)
             {
                 Assert.AreEqual(testOuputUnique[i], list.Get(i).Data);
+                Assert.AreEqual(testOuputUnique[i], subList.Get(i));
             }
 
             list = new LxList<SortTestData>();
+            subList = new LxList<int>();
             for (int i = 0; i < testInput.Length; ++i)
             {
-                list.Add(new SortTestData { Data = testInput[i] }, comparer, false);
+                int insertIndex = list.Add(new SortTestData { Data = testInput[i] }, comparer, false);
+                if(insertIndex >= 0)
+                {
+                    subList.Insert(insertIndex, testInput[i]);
+                }
             }
 
+            Assert.AreEqual(subList.Count, list.Count);
             for (int i = 0; i < list.Count; ++i)
             {
                 Assert.AreEqual(testOuputNoUnique[i], list.Get(i).Data);
+                Assert.AreEqual(testOuputNoUnique[i], subList.Get(i));
             }
 
         }
@@ -227,7 +242,7 @@ namespace MatchMaking.Tests
             LxList<int> list = InitList(count);
 
             Assert.Catch<LxException>(() => { list.Insert(-1, -1); });
-            Assert.Catch<LxException>(() => { list.Insert(100, -1); });
+            Assert.Catch<LxException>(() => { list.Insert(101, -1); });
 
             list.Insert(0, -1);
             for(int i = 0; i < list.Count; ++i)

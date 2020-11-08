@@ -79,8 +79,10 @@ namespace MatchMakingCore
             _array[_lastIndex] = value;
         }
 
-        public void Add(T value, IComparer<T> comparer, bool unique)
+        public int Add(T value, IComparer<T> comparer, bool unique)
         {
+            int addedIndex = -1;
+
             if(comparer == null)
             {
                 throw new LxException($"comparer can not be null.");
@@ -89,34 +91,24 @@ namespace MatchMakingCore
             if(Count <= 0)
             {
                 Add(value);
-                return;
+                return 0;
             }
 
             int compareResult = Array.BinarySearch(_array, 0, Count, value, comparer);
             if(compareResult < 0)
             {
                 int insertIndex = ~compareResult;
-                if(insertIndex > _lastIndex)
-                {
-                    Add(value);
-                }
-                else
-                {
-                    Insert(insertIndex, value);
-                }
+                Insert(insertIndex, value);
+                return insertIndex;
             }
             else if(compareResult >= 0 && !unique)
             {
                 int insertIndex = compareResult;
-                if (insertIndex > _lastIndex)
-                {
-                    Add(value);
-                }
-                else
-                {
-                    Insert(insertIndex, value);
-                }
+                Insert(insertIndex, value);
+                return insertIndex;
             }
+
+            return addedIndex;
         }
 
         public void Set(int index, T value)
@@ -169,7 +161,7 @@ namespace MatchMakingCore
 
         public void Insert(int index, T value)
         {
-            if (index < 0 || index > _lastIndex)
+            if (index < 0 || index > Count)
             {
                 throw new LxException($"invalid insert index {index}");
             }
@@ -184,9 +176,23 @@ namespace MatchMakingCore
 
             if (index == 0)
             {
-                // insert head
-                Array.Copy(_array, 0, _tmp, 1, Count);
-                Swap();
+                if(Count == 0)
+                {
+                    Add(value);
+                }
+                else
+                {
+                    // insert head
+                    Array.Copy(_array, 0, _tmp, 1, Count);
+                    Swap();
+
+                    ++_lastIndex;
+                    _array[index] = value;
+                }
+            }
+            else if(index == Count)
+            {
+                Add(value);
             }
             else
             {
@@ -194,10 +200,10 @@ namespace MatchMakingCore
                 Array.Copy(_array, 0, _tmp, 0, index + 1);
                 Array.Copy(_array, index, _tmp, index + 1, Count - index);
                 Swap();
-            }
 
-            ++_lastIndex;
-            _array[index] = value;
+                ++_lastIndex;
+                _array[index] = value;
+            }
         }
     }
 }
