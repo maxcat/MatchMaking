@@ -16,7 +16,8 @@ namespace MatchMaking.Tests
             container.MmConfig = MatchmakingTest.TestConfig;
             //container.SetPlayerDatabase(MatchmakingTest.TestPlayers);
 
-            for(int i = 0; i < 24; ++i)
+            int roomCount = 4;
+            for(int i = 0; i < roomCount * 2 * container.MmConfig.PlayerPerTeam; ++i)
             {
                 int entityId = container.CreateEntity();
                 container.AddMmrComponent(entityId, i * (container.MmConfig.MaxDifferenceAllowed - 1));
@@ -27,6 +28,7 @@ namespace MatchMaking.Tests
             system.Execute(container);
 
             StringBuilder builder = new StringBuilder();
+            Assert.AreEqual(roomCount, container.RoomInfoComponentsCount);
             for(int i = 0; i < container.RoomInfoComponentsCount; ++i)
             {
                 if(container.TryGetRoomInfoTeamAFromIndex(i, out int[] teamA) &&

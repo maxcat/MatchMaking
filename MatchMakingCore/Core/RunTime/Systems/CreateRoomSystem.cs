@@ -15,6 +15,7 @@ namespace MatchMakingCore
             var teamB = new List<int>(playerPerTeam);
 
             int i = 0;
+            var removeEntityIds = new List<int>(16);
             while(i < container.MmrComponentsCount - 1)
             {
                 if(container.TryGetMmrWeightFromIndex(i, out long currentWeight) &&
@@ -38,11 +39,9 @@ namespace MatchMakingCore
                                 teamA = new List<int>(playerPerTeam);
                                 teamB = new List<int>(playerPerTeam);
 
-                                container.RemoveMmrComponent(currentEntityId);
-                                container.RemovePlayerInfoComponent(currentEntityId);
 
-                                container.RemoveMmrComponent(nextEntityId);
-                                container.RemovePlayerInfoComponent(nextEntityId);
+                                removeEntityIds.Add(currentEntityId);
+                                removeEntityIds.Add(nextEntityId);
                             }
                             i += 2;
                             continue;
@@ -51,6 +50,14 @@ namespace MatchMakingCore
                 }
                 ++i;
             }
+
+            foreach(int entityId in removeEntityIds)
+            {
+                container.RemoveMmrComponent(entityId);
+                container.RemovePlayerInfoComponent(entityId);
+            }
+
+            removeEntityIds.Clear();
         }
     }
 }
