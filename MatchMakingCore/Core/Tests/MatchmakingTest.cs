@@ -60,6 +60,7 @@ namespace MatchMaking.Tests
 
         public static MatchmakingConfig TestConfig = new MatchmakingConfig
         {
+            PlayerPerTeam = 3,
             LoseWeight = 1,
             WinWeight = 10,
             MaxDifferenceAllowed = 30,

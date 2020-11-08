@@ -62,6 +62,7 @@ namespace MatchMakingCore
 
                     _playerInfoComponents.Remove(componentIndex);
                     _playerInfoEntityMap.Set(entityId, Container.EMPTY_ID);
+                    _entityPlayerInfoMap.Remove(componentIndex);
                 }
             }
         }

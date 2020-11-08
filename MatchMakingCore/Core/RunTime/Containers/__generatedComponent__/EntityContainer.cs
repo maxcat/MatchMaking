@@ -21,6 +21,7 @@ namespace MatchMakingCore
             // TODO: need better data structure for entity component mapping.
             _playerInfoEntityMap.Add(EMPTY_ID);
             _mmrEntityMap.Add(EMPTY_ID);
+            _roomInfoEntityMap.Add(EMPTY_ID);
 
             return _lastEntityId;
         }

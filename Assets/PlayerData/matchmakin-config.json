@@ -1,4 +1,5 @@
 {
+    "PlayerPerTeam": 3,
     "LoseWeight": 1,
     "WinWeight": 10,
     "MaxDifferenceAllowed": 30,
