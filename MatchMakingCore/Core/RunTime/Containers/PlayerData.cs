@@ -7,6 +7,7 @@ namespace MatchMakingCore
         [JsonProperty("name")] public string Name;
         [JsonProperty("wins")] public string Wins;
         [JsonProperty("loses")] public string Loses;
+        [JsonIgnore] public bool IsAvailable = true;
 
         public override string ToString()
         {

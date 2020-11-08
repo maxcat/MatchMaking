@@ -11,6 +11,8 @@ namespace MatchMakingCore
         private LxList<int> _playerInfoEntityComponentMap = new LxList<int>();
         private Queue<PlayerInfoComponent> _playerInfoPool = new Queue<PlayerInfoComponent>(COMPONENT_POOL_START_SIZE);
 
+        public int PlayerInfoComponentsCount => _playerInfoComponents.Count;
+
         #region Pooling
         private PlayerInfoComponent GetPlayerInfoComponentFromPool()
         {

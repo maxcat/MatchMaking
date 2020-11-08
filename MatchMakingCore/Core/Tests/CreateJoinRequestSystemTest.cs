@@ -1,26 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Diagnostics;
-using NUnit.Framework;
-using UnityEngine.TestTools;
+﻿using NUnit.Framework;
 using MatchMakingCore;
 
 namespace MatchMaking.Tests
 {
-    public class MatchmakingTest
+    public class CreateJoinRequestSystemTest
     {
-        public static Stopwatch Measure(Action action, int iteration = 1)
-        {
-            Stopwatch watch = Stopwatch.StartNew();
-            for (int i = 0; i < iteration; ++i)
-            {
-                action.Invoke();
-            }
-            watch.Stop();
-
-            return watch;
-        }
-
         [Test]
         public void Test()
         {
@@ -35,10 +19,10 @@ namespace MatchMaking.Tests
             createJoinRequestSystem.Execute(container);
 
             int count = 0;
-            for(int i = 0; i < container.PlayerDatabaseSize; ++i)
+            for (int i = 0; i < container.PlayerDatabaseSize; ++i)
             {
                 PlayerData playerData = container.GetPlayerData(i);
-                if(!playerData.IsAvailable)
+                if (!playerData.IsAvailable)
                 {
                     ++count;
                 }
@@ -48,13 +32,6 @@ namespace MatchMaking.Tests
             Assert.AreEqual(count, container.PlayerInfoComponentsCount);
 
         }
-
-        [UnityTest]
-        public IEnumerator MatchmakingTestWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
-        }
     }
 }
+

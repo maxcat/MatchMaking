@@ -11,6 +11,8 @@ namespace MatchMakingCore
         private LxList<int> _mmrEntityComponentMap = new LxList<int>();
         private Queue<MmrComponent> _mmrPool = new Queue<MmrComponent>(COMPONENT_POOL_START_SIZE);
 
+        public int MmrComponentsCount => _mmrComponents.Count;
+
         #region Pooling
         private MmrComponent GetMmrComponentFromPool()
         {

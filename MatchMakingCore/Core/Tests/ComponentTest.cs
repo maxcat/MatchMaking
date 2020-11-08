@@ -1,12 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
-using System.Diagnostics;
-using System;
-using UnityEngine;
-using UnityEngine.TestTools;
+﻿using NUnit.Framework;
 using MatchMakingCore;
-using Debug = UnityEngine.Debug;
 
 namespace MatchMaking.Tests
 {
