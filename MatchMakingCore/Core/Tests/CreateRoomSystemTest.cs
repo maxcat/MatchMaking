@@ -8,13 +8,12 @@ namespace MatchMaking.Tests
     public class CreateRoomSystemTest
     {
         [Test]
-        public void Test()
+        public void SuccessTest()
         {
             Container container = new Container();
             container.InitComponentComparers();
 
             container.MmConfig = MatchmakingTest.TestConfig;
-            //container.SetPlayerDatabase(MatchmakingTest.TestPlayers);
 
             int roomCount = 4;
             for(int i = 0; i < roomCount * 2 * container.MmConfig.PlayerPerTeam; ++i)
@@ -22,6 +21,7 @@ namespace MatchMaking.Tests
                 int entityId = container.CreateEntity();
                 container.AddMmrComponent(entityId, i * (container.MmConfig.MaxDifferenceAllowed - 1));
                 container.AddPlayerInfoComponent(entityId, i);
+                container.AddWaitingComponent(entityId, 0);
             }
 
             CreateRoomSystem system = new CreateRoomSystem();
@@ -52,6 +52,34 @@ namespace MatchMaking.Tests
                     builder.Clear();
                 }
             }
+        }
+
+        [Test]
+        public void FirstAttemptFailTest()
+        {
+            Container container = new Container();
+            container.InitComponentComparers();
+
+            container.MmConfig = MatchmakingTest.TestConfig;
+
+            int roomCount = 4;
+            for (int i = 0; i < roomCount * 2 * container.MmConfig.PlayerPerTeam; ++i)
+            {
+                int entityId = container.CreateEntity();
+                container.AddMmrComponent(entityId, i * (container.MmConfig.MaxDifferenceAllowed));
+                container.AddPlayerInfoComponent(entityId, i);
+                container.AddWaitingComponent(entityId, 0);
+            }
+
+            CreateRoomSystem system = new CreateRoomSystem();
+            TurnSystem turnSystem = new TurnSystem();
+            system.Execute(container);
+
+            Assert.AreEqual(0, container.RoomInfoComponentsCount);
+
+            turnSystem.Execute(container);
+            system.Execute(container);
+            Assert.AreEqual(roomCount, container.RoomInfoComponentsCount);
         }
     }
 }

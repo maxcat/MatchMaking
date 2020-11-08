@@ -11,6 +11,7 @@ namespace MatchMakingCore
         public void Execute(Container container)
         {
             int playerPerTeam = container.MmConfig.PlayerPerTeam;
+            long bonus = container.MmConfig.WaitBonusWeight;
             var teamA = new List<int>(playerPerTeam);
             var teamB = new List<int>(playerPerTeam);
 
@@ -21,30 +22,35 @@ namespace MatchMakingCore
                 if(container.TryGetMmrWeightFromIndex(i, out long currentWeight) &&
                     container.TryGetMmrWeightFromIndex(i + 1, out long nextWeight))
                 {
-                    if(currentWeight - nextWeight < container.MmConfig.MaxDifferenceAllowed)
+                    int currentEntityId = container.GetMMrEntityId(i);
+                    int nextEntityId = container.GetMMrEntityId(i + 1);
+
+                    if(container.TryGetWaitingTurnFromEntityId(currentEntityId, out int currentTurn) &&
+                        container.TryGetWaitingTurnFromEntityId(nextEntityId, out int nextTurn))
                     {
-                        int currentEntityId = container.GetMMrEntityId(i);
-                        int nextEntityId = container.GetMMrEntityId(i + 1);
-                        if(container.TryGetPlayerInfoDatabaseKeyFromEntityId(currentEntityId, out int currentPlayerId) &&
-                            container.TryGetPlayerInfoDatabaseKeyFromEntityId(nextEntityId, out int nextPlayerId))
+                        if (currentWeight - currentTurn * bonus - nextTurn * bonus - nextWeight < container.MmConfig.MaxDifferenceAllowed)
                         {
-                            teamA.Add(currentPlayerId);
-                            teamB.Add(nextPlayerId);
-
-                            if(teamA.Count == playerPerTeam)
+                            if (container.TryGetPlayerInfoDatabaseKeyFromEntityId(currentEntityId, out int currentPlayerId) &&
+                                container.TryGetPlayerInfoDatabaseKeyFromEntityId(nextEntityId, out int nextPlayerId))
                             {
-                                int roomEntityId = container.CreateEntity();
-                                container.AddRoomInfoComponent(roomEntityId, teamA.ToArray(), teamB.ToArray());
+                                teamA.Add(currentPlayerId);
+                                teamB.Add(nextPlayerId);
 
-                                teamA = new List<int>(playerPerTeam);
-                                teamB = new List<int>(playerPerTeam);
+                                if (teamA.Count == playerPerTeam)
+                                {
+                                    int roomEntityId = container.CreateEntity();
+                                    container.AddRoomInfoComponent(roomEntityId, teamA.ToArray(), teamB.ToArray());
+
+                                    teamA = new List<int>(playerPerTeam);
+                                    teamB = new List<int>(playerPerTeam);
 
 
-                                removeEntityIds.Add(currentEntityId);
-                                removeEntityIds.Add(nextEntityId);
+                                    removeEntityIds.Add(currentEntityId);
+                                    removeEntityIds.Add(nextEntityId);
+                                }
+                                i += 2;
+                                continue;
                             }
-                            i += 2;
-                            continue;
                         }
                     }
                 }
