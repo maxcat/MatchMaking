@@ -40,14 +40,14 @@ namespace MatchMakingCore
                             foreach (int key in teamA)
                             {
                                 PlayerData data = container.GetPlayerData(key);
-                                builder.Append($"{data.Name}; ");
+                                builder.Append($"{key} - {data.Name}; ");
                             }
 
                             builder.Append("team B ");
                             foreach (int key in teamB)
                             {
                                 PlayerData data = container.GetPlayerData(key);
-                                builder.Append($"{data.Name}; ");
+                                builder.Append($"{key} - {data.Name}; ");
                             }
                         }
                         Console.WriteLine(builder.ToString());

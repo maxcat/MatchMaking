@@ -41,14 +41,14 @@ public class MatchmakingTest : MonoBehaviour
                 foreach(int key in teamA)
                 {
                     PlayerData data = _container.GetPlayerData(key);
-                    builder.Append($"{data.Name}; ");
+                    builder.Append($"{key} - {data.Name}; ");
                 }
 
                 builder.Append("team B ");
                 foreach(int key in teamB)
                 {
                     PlayerData data = _container.GetPlayerData(key);
-                    builder.Append($"{data.Name}; ");
+                    builder.Append($"{key} - {data.Name}; ");
                 }
             }
             Debug.Log(builder.ToString());
