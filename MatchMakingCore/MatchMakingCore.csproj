@@ -36,10 +36,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" /> 
     <Compile Include="Core\RunTime\**\*.cs" />
-    <Compile Include="Core\RunTime\Containers\LxList.cs" />
-    <Compile Include="Core\RunTime\Base\LxLog.cs" />
-    <Compile Include="Core\RunTime\Base\LxException.cs" />
-    <Compile Include="Core\RunTime\Base\NativeLog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

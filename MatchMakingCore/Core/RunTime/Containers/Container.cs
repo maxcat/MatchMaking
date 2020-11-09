@@ -27,7 +27,7 @@ namespace MatchMakingCore
 #if UNITY
             path = UNITY_DATA_PATH;
 #else
-            path = MM_CONFIG_PATH;
+            path = PLAYER_DATA_PATH;
 #endif
             using (StreamReader stream = new StreamReader(path))
             {
@@ -47,7 +47,7 @@ namespace MatchMakingCore
 #if UNITY
             path = UNITY_MM_CONFIG_PATH;
 #else
-            path = PLAYER_DATA_PATH;
+            path = MM_CONFIG_PATH;
 #endif
             using (StreamReader stream = new StreamReader(path))
             {
